@@ -5,7 +5,16 @@ import (
 	"net/url"
 )
 
-func Init(settings webview.Settings, form *FormConfig, handler SubmitHandler) (*WebContext, error) {
+type Settings struct {
+	Title string
+	URL string
+	Width int
+	Height int
+	Resizable bool
+	Debug bool
+}
+
+func Init(settings Settings, form *FormConfig, handler SubmitHandler) (*WebContext, error) {
 	const myHTML = `<!doctype html><html>
 		<head>
 			<link rel="stylesheet" href="https://unpkg.com/@clr/ui/clr-ui.min.css"/>
@@ -119,7 +128,7 @@ func Init(settings webview.Settings, form *FormConfig, handler SubmitHandler) (*
 		Height: settings.Height,
 		Resizable: settings.Resizable,
 		URL: `data:text/html,` + url.PathEscape(myHTML),
-		Debug: true,
+		Debug: settings.Debug,
 		// ExternalInvokeCallback: settings.ExternalInvokeCallback,
 	})
 

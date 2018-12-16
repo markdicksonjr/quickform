@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/markdicksonjr/quickform"
-	"github.com/zserge/webview"
 	"log"
 	"time"
 )
@@ -39,7 +38,7 @@ func main() {
 	config.Elements[1].InitialValue = 7
 
 	// provide mostly default webview settings
-	settings := webview.Settings{
+	settings := quickform.Settings{
 		Title: "Test",
 	}
 
