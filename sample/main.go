@@ -13,13 +13,13 @@ type MainFormHandler struct {
 }
 
 // our submission-handling code
-func (f *MainFormHandler) OnSubmit(result map[string]interface{}, w *webview.WebView) {
-	ui.Eval(w, "showLoadingMessage(true);")
+func (f *MainFormHandler) OnSubmit(result map[string]interface{}, w *ui.WebContext) {
+	(*w).Eval("showLoadingMessage(true);")
 	log.Println("mock saving \"" + result["Name"].(string) + "\"")
 
 	go func() {
 		time.Sleep(5 * time.Second)
-		ui.Eval(w, "showLoadingMessage(false);")
+		(*w).Eval("showLoadingMessage(false);")
 	}()
 }
 
@@ -51,5 +51,5 @@ func main() {
 	}
 
 	// start the window
-	ui.Run(w)
+	w.Run()
 }

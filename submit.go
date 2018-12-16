@@ -1,13 +1,11 @@
 package lib
 
-import "github.com/zserge/webview"
-
 type SubmitHandler interface {
-	OnSubmit(map[string]interface{}, *webview.WebView)
+	OnSubmit(map[string]interface{}, *WebContext)
 }
 
 type HandlerWrapper struct {
-	w *webview.WebView
+	w *WebContext
 	handler SubmitHandler
 }
 
