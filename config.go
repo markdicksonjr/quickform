@@ -1,4 +1,4 @@
-package lib
+package quickform
 
 type FormConfig struct {
 	Elements []FormConfigElements `json:"elements"`

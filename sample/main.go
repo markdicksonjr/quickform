@@ -1,7 +1,7 @@
 package main
 
 import (
-	ui "github.com/markdicksonjr/go-forms-ui"
+	"github.com/markdicksonjr/quickform"
 	"github.com/zserge/webview"
 	"log"
 	"time"
@@ -9,11 +9,11 @@ import (
 
 // make a struct to handle the submission result
 type MainFormHandler struct {
-	ui.SubmitHandler
+	quickform.SubmitHandler
 }
 
 // our submission-handling code
-func (f *MainFormHandler) OnSubmit(result map[string]interface{}, w *ui.WebContext) {
+func (f *MainFormHandler) OnSubmit(result map[string]interface{}, w *quickform.WebContext) {
 	(*w).Eval("showLoadingMessage(true);")
 	log.Println("mock saving \"" + result["Name"].(string) + "\"")
 
@@ -26,8 +26,8 @@ func (f *MainFormHandler) OnSubmit(result map[string]interface{}, w *ui.WebConte
 func main() {
 
 	// gin up a simple config for the form
-	config := ui.FormConfig{}
-	config.Elements = make([]ui.FormConfigElements, 2)
+	config := quickform.FormConfig{}
+	config.Elements = make([]quickform.FormConfigElements, 2)
 	config.Elements[0].Name = "Name"
 	config.Elements[0].Label = "Name"
 	config.Elements[0].Type = "input"
@@ -44,7 +44,7 @@ func main() {
 	}
 
 	// init the window
-	w, err := ui.Init(settings, &config, &MainFormHandler{})
+	w, err := quickform.Init(settings, &config, &MainFormHandler{})
 
 	if err != nil {
 		log.Fatal(err)

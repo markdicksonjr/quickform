@@ -1,4 +1,4 @@
-package lib
+package quickform
 
 type SubmitHandler interface {
 	OnSubmit(map[string]interface{}, *WebContext)

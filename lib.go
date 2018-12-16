@@ -1,4 +1,4 @@
-package lib
+package quickform
 
 import (
 	"github.com/zserge/webview"
