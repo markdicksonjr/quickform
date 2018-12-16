@@ -5,7 +5,7 @@ import (
 	"net/url"
 )
 
-func Init(settings webview.Settings, form *FormConfig, handler SubmitHandler) error {
+func Init(settings webview.Settings, form *FormConfig, handler SubmitHandler) (*webview.WebView, error) {
 	const myHTML = `<!doctype html><html>
 		<head>
 			<link rel="stylesheet" href="https://unpkg.com/@clr/ui/clr-ui.min.css"/>
@@ -122,7 +122,6 @@ func Init(settings webview.Settings, form *FormConfig, handler SubmitHandler) er
 		Debug: true,
 		// ExternalInvokeCallback: settings.ExternalInvokeCallback,
 	})
-	defer w.Exit()
 
 	w.Dispatch(func() {
 		w.Bind("config", form)
@@ -131,7 +130,11 @@ func Init(settings webview.Settings, form *FormConfig, handler SubmitHandler) er
 			w: &w,
 		})
 	})
-	w.Run()
 
-	return nil
+	return &w, nil
+}
+
+func Run(w *webview.WebView) {
+	defer (*w).Exit()
+	(*w).Run()
 }

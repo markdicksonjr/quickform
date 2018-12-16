@@ -43,8 +43,13 @@ func main() {
 		Title: "Test",
 	}
 
-	// start the window
-	if err := ui.Init(settings, &config, &MainFormHandler{}); err != nil {
+	// init the window
+	w, err := ui.Init(settings, &config, &MainFormHandler{})
+
+	if err != nil {
 		log.Fatal(err)
 	}
+
+	// start the window
+	ui.Run(w)
 }
