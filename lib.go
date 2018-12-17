@@ -22,6 +22,9 @@ func Init(settings Settings, form *FormConfig, handler SubmitHandler) (*WebConte
 			<style>
 				.hidden { display: none; }
 				.modal-dialog { width: inherit; }
+				.clr-control-container { width: 100%; display: block; }
+				.clr-control-container input { width: 100%; }
+				.clr-form-control:first-child { margin-top: 0; }
 			</style>
 		</head>
 		<body>
@@ -58,7 +61,7 @@ func Init(settings Settings, form *FormConfig, handler SubmitHandler) (*WebConte
 					});
 
 					parentContainer.append('<br/><button class="btn btn-primary" onclick="submit()">Submit</button>');
-					contentAreaElement.html(parentContainer.html());
+					contentAreaElement.html('<div class="row clr-col-7">' + parentContainer.html() + '</div>');
 				}
 			})()
 
