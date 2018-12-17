@@ -34,3 +34,11 @@ func (w *WebContext) AppendLogMessage(message string) {
 func (w *WebContext) ClearLogs() {
 	(*w).Eval("clearLogs();")
 }
+
+func (w *WebContext) SetFullscreen(fullscreen bool) {
+	(*w.W).SetFullscreen(fullscreen)
+}
+
+func (w *WebContext) Exit() {
+	(*w.W).Exit()
+}

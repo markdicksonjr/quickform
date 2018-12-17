@@ -15,15 +15,11 @@ type MainFormHandler struct {
 func (f *MainFormHandler) OnSubmit(result map[string]interface{}, w *quickform.WebContext) {
 	(*w).ShowLoadingIndicator(true)
 	(*w).AppendLogMessage("showed loading indicator")
-	(*w).AppendLogMessage("showed loading indicator")
-	(*w).AppendLogMessage("showed loading indicator")
 	log.Println("mock saving \"" + result["Name"].(string) + "\"")
 
 	go func() {
 		time.Sleep(5 * time.Second)
 		(*w).ShowLoadingIndicator(false)
-		(*w).AppendLogMessage("hid loading indicator")
-		(*w).AppendLogMessage("hid loading indicator")
 		(*w).AppendLogMessage("hid loading indicator")
 	}()
 }
