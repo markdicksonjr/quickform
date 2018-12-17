@@ -19,7 +19,7 @@ type Settings struct {
 }
 
 func Init(settings Settings, form *FormConfig, handler SubmitHandler) (*WebContext, error) {
-	var logContainer = `<div class="clr-col-5 log-container"></div>`
+	var logContainer = `<div class="clr-col-6 log-container"></div>`
 	if settings.HideLogs {
 		logContainer = ``;
 	}
@@ -69,7 +69,7 @@ func Init(settings Settings, form *FormConfig, handler SubmitHandler) (*WebConte
 					});
 
 					parentContainer.append('<br/><button class="btn btn-primary" onclick="submit()">Submit</button>');
-					contentAreaElement.html('<div class="clr-row"><div class="clr-col-7">' + 
+					contentAreaElement.html('<div class="clr-row"><div class="clr-col-6">' + 
 						parentContainer.html() + 
 					'</div>` + logContainer + `</div>');
 
@@ -120,7 +120,7 @@ func Init(settings Settings, form *FormConfig, handler SubmitHandler) (*WebConte
 
 			function buildInput(element) {
 				return $('<div class="clr-input-wrapper">' +
-                		'<input type="text" id="' + element.name + '" ' + 
+                		'<input type="text" id="' + element.name + '" spellcheck="false" ' + 
 							(element.placeholder ? 'placeholder="' + element.placeholder + '" ' : '') + 
 							(element.initialValue ? 'value="' + element.initialValue + '" ' : '') + 
 						'class="clr-input form-field">' +
@@ -132,7 +132,7 @@ func Init(settings Settings, form *FormConfig, handler SubmitHandler) (*WebConte
 
 			function buildInputNumber(element) {
 				return $('<div class="clr-input-wrapper">' +
-                		'<input type="number" id="' + element.name + '" ' + 
+                		'<input type="number" id="' + element.name + '" spellcheck="false" ' + 
 							(element.placeholder ? 'placeholder="' + element.placeholder + '"' : '') +
 							(element.initialValue ? 'value="' + element.initialValue + '" ' : '') + 
 						'class="clr-input form-field">' +
