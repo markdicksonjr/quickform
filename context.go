@@ -1,6 +1,9 @@
 package quickform
 
-import "github.com/zserge/webview"
+import (
+	"github.com/zserge/webview"
+	"strconv"
+)
 
 type WebContext struct {
 	W *webview.WebView
@@ -18,4 +21,16 @@ func (w *WebContext) Eval(script string) error {
 	})
 
 	return nil
+}
+
+func (w *WebContext) ShowLoadingIndicator(shown bool) {
+	(*w).Eval("showLoadingIndicator(" + strconv.FormatBool(shown) + ");")
+}
+
+func (w *WebContext) AppendLogMessage(message string) {
+	(*w).Eval("appendLogMessage(\"" + message + "\");")
+}
+
+func (w *WebContext) ClearLogs() {
+	(*w).Eval("clearLogs();")
 }

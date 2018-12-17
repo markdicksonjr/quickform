@@ -6,16 +6,25 @@ import (
 )
 
 type Settings struct {
+	// for webview
 	Title string
 	URL string
 	Width int
 	Height int
 	Resizable bool
 	Debug bool
+
+	// for our functionality
+	HideLogs bool
 }
 
 func Init(settings Settings, form *FormConfig, handler SubmitHandler) (*WebContext, error) {
-	const myHTML = `<!doctype html><html>
+	var logContainer = `<div class="clr-col-5 log-container"></div>`
+	if settings.HideLogs {
+		logContainer = ``;
+	}
+
+	var myHTML = `<!doctype html><html>
 		<head>
 			<link rel="stylesheet" href="https://unpkg.com/@clr/ui/clr-ui.min.css"/>
 			<script src="https://unpkg.com/zepto@1.2.0/dist/zepto.min.js"></script>
@@ -25,23 +34,20 @@ func Init(settings Settings, form *FormConfig, handler SubmitHandler) (*WebConte
 				.clr-control-container { width: 100%; display: block; }
 				.clr-control-container input { width: 100%; }
 				.clr-form-control:first-child { margin-top: 0; }
+				.log-container { height: calc(100% - 2rem); overflow-y: auto; position: absolute; right: 0; }
 			</style>
 		</head>
 		<body>
 			<div class="main-container">
     			<div class="content-container">
-        			<div class="content-area">
-            			... loading ...
-        			</div>
+        			<div class="content-area">... loading ...</div>
     			</div>
 			</div>
 			<div class="modal hidden">
     			<div class="modal-dialog" role="dialog" aria-hidden="true">
         			<div class="modal-content">
             			<div class="modal-body">
-                			<span class="spinner">
-    							Loading...
-							</span>
+                			<span class="spinner">Loading...</span>
             			</div>
         			</div>
     			</div>
@@ -49,6 +55,8 @@ func Init(settings Settings, form *FormConfig, handler SubmitHandler) (*WebConte
 			<div class="modal-backdrop hidden" aria-hidden="true"></div>
 		</body>
 		<script>
+			var logContainer = null;
+
 			(function(){
 				$ = Zepto;
 				var contentAreaElement = $('.content-area');
@@ -61,11 +69,15 @@ func Init(settings Settings, form *FormConfig, handler SubmitHandler) (*WebConte
 					});
 
 					parentContainer.append('<br/><button class="btn btn-primary" onclick="submit()">Submit</button>');
-					contentAreaElement.html('<div class="row clr-col-7">' + parentContainer.html() + '</div>');
+					contentAreaElement.html('<div class="clr-row"><div class="clr-col-7">' + 
+						parentContainer.html() + 
+					'</div>` + logContainer + `</div>');
+
+					logContainer = $('.log-container');
 				}
 			})()
 
-			function showLoadingMessage(visible) {
+			function showLoadingIndicator(visible) {
 				if(visible) {
 					$('.modal').removeClass('hidden');
 					$('.modal-backdrop').removeClass('hidden');
@@ -73,6 +85,14 @@ func Init(settings Settings, form *FormConfig, handler SubmitHandler) (*WebConte
 					$('.modal').addClass('hidden');
 					$('.modal-backdrop').addClass('hidden');
 				}
+			}
+
+			function appendLogMessage(text) {
+				logContainer.append($('<div>' + text + '</div>'));
+			}
+
+			function clearLogs() {
+				logContainer.html('');
 			}
 
 			function submit() {
