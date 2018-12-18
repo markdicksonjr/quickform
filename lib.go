@@ -6,6 +6,7 @@ import (
 )
 
 type Settings struct {
+
 	// for webview
 	Title string
 	URL string
@@ -16,6 +17,18 @@ type Settings struct {
 
 	// for our functionality
 	HideLogs bool
+}
+
+type LibChooseFileHandler struct {
+	ChooseFileHandler
+}
+
+func (c LibChooseFileHandler) OnChooseFileRequested(path string, title string, w *WebContext) string {
+	return (*w.W).Dialog(webview.DialogTypeOpen, webview.DialogFlagFile, title, path)
+}
+
+func (c LibChooseFileHandler) OnChooseDirectoryRequested(path string, title string, w *WebContext) string {
+	return (*w.W).Dialog(webview.DialogTypeOpen, webview.DialogFlagDirectory, title, path)
 }
 
 func Init(settings Settings, form *FormConfig, handler SubmitHandler) (*WebContext, error) {
@@ -66,7 +79,7 @@ func Init(settings Settings, form *FormConfig, handler SubmitHandler) (*WebConte
 
 				logContainer = $('.log-container');
 			}
-			})()
+		})()
 
 		function showLoadingIndicator(visible) {
 			if(visible) {
@@ -91,13 +104,25 @@ func Init(settings Settings, form *FormConfig, handler SubmitHandler) (*WebConte
 			$('.form-field').forEach(function(field) {
 				returnValue[field.id] = field.value;
 			});
-			handler.onSubmit(returnValue);
+			submitHandler.onSubmit(returnValue);
+		}
+
+		function openDirectoryPicker(elementId) {
+			chooseFile.onChooseDirectoryRequested(elementId, "", "testT") // TODO: params
+		}
+
+		function openFilePicker(elementId) {
+			chooseFile.onChooseFileRequested(elementId, "", "testT") // TODO: params
 		}
 
 		function buildElement(element) {
 			var bestBuilder = buildInput;
 			if(element.type === 'input/number') {
 				bestBuilder = buildInputNumber;
+			} else if(element.type === 'input/file') {
+				bestBuilder = buildInputFile;
+			} else if(element.type === 'input/directory') {
+				bestBuilder = buildInputDirectory;
 			}
 
 			return $('' + 
@@ -116,6 +141,27 @@ func Init(settings Settings, form *FormConfig, handler SubmitHandler) (*WebConte
 						(element.initialValue ? 'value="' + element.initialValue + '" ' : '') + 
 					'class="clr-input form-field">' +
                		'<clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>' +
+        		'</div>' +
+           		(element.helperText ? '<span class="clr-subtext">' + element.helperText + '</span>' : '')
+			);
+		}
+
+		function buildInputFile(element) {
+			return buildInputFileOrDirectory(element, true);
+		}
+
+		function buildInputDirectory(element) {
+			return buildInputFileOrDirectory(element, false);
+		}
+
+		function buildInputFileOrDirectory(element, isFile) {
+			return $('<div class="clr-input-wrapper">' +
+            		'<input type="text" id="' + element.name + '" spellcheck="false" ' + 
+						(element.placeholder ? 'placeholder="' + element.placeholder + '" ' : '') + 
+						(element.initialValue ? 'value="' + element.initialValue + '" ' : '') + 
+					'class="clr-input form-field">' +
+               		'<button class="btn btn-outline btn-sm" onclick="' + 
+						(isFile ? 'openFilePicker(\'' + element.name + '\')' : 'openDirectoryPicker(\'' + element.name + '\')') + '">Choose</button>' +
         		'</div>' +
            		(element.helperText ? '<span class="clr-subtext">' + element.helperText + '</span>' : '')
 			);
@@ -159,7 +205,6 @@ func Init(settings Settings, form *FormConfig, handler SubmitHandler) (*WebConte
 		Resizable: settings.Resizable,
 		URL: `data:text/html,` + url.PathEscape(finalHTML),
 		Debug: settings.Debug,
-		// ExternalInvokeCallback: settings.ExternalInvokeCallback,
 	})
 
 	webContext := WebContext{
@@ -168,7 +213,11 @@ func Init(settings Settings, form *FormConfig, handler SubmitHandler) (*WebConte
 
 	w.Dispatch(func() {
 		w.Bind("config", form)
-		w.Bind("handler", HandlerWrapper{
+		w.Bind("chooseFile", ChooseFileHandlerWrapper{
+			handler: &LibChooseFileHandler{},
+			w: &webContext,
+		})
+		w.Bind("submitHandler", SubmitHandlerWrapper{
 			handler: handler,
 			w: &webContext,
 		})
