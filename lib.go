@@ -19,18 +19,6 @@ type Settings struct {
 	HideLogs bool
 }
 
-type LibChooseFileHandler struct {
-	ChooseFileHandler
-}
-
-func (c LibChooseFileHandler) OnChooseFileRequested(path string, title string, w *WebContext) string {
-	return (*w.W).Dialog(webview.DialogTypeOpen, webview.DialogFlagFile, title, path)
-}
-
-func (c LibChooseFileHandler) OnChooseDirectoryRequested(path string, title string, w *WebContext) string {
-	return (*w.W).Dialog(webview.DialogTypeOpen, webview.DialogFlagDirectory, title, path)
-}
-
 func Init(settings Settings, form *FormConfig, handler SubmitHandler) (*WebContext, error) {
 	var logContainer = `<div class="clr-col-6 log-container"></div>`
 	if settings.HideLogs {
@@ -214,7 +202,6 @@ func Init(settings Settings, form *FormConfig, handler SubmitHandler) (*WebConte
 	w.Dispatch(func() {
 		w.Bind("config", form)
 		w.Bind("chooseFile", ChooseFileHandlerWrapper{
-			handler: &LibChooseFileHandler{},
 			w: &webContext,
 		})
 		w.Bind("submitHandler", SubmitHandlerWrapper{

@@ -7,7 +7,7 @@ type FormConfig struct {
 type FormConfigElementsBase struct {
 	Name string `json:"name"`
 	Label string `json:"label"`
-	Type string `json:"type"` // enum: "input", "input/number", "input/file", "input/directory", TODO: "input/date", "checkbox
+	Type string `json:"type"` // enum: "input", "input/number", "input/file", "input/directory", TODO: "input/date", "checkbox"
 	HelperText string `json:"helperText"`
 	Placeholder string `json:"placeholder"`
 }
