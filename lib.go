@@ -25,6 +25,15 @@ func Init(settings Settings, form *FormConfig, handler SubmitHandler) (*WebConte
 		logContainer = ``;
 	}
 
+	const rootStyles = `
+		.hidden { display: none; }
+		.modal-dialog { width: inherit; }
+		.clr-control-container { width: 100%; display: block; }
+		.clr-control-container input { width: 100%; }
+		.clr-form-control:first-child { margin-top: 0; }
+		.log-container { height: calc(100% - 2rem); overflow-y: auto; position: absolute; right: 0; }
+	`
+
 	const dialogHTML = `
 		<div class="modal hidden">
 			<div class="modal-dialog" role="dialog" aria-hidden="true">
@@ -35,15 +44,7 @@ func Init(settings Settings, form *FormConfig, handler SubmitHandler) (*WebConte
         		</div>
     		</div>
 		</div>
-		<div class="modal-backdrop hidden" aria-hidden="true"></div>`
-
-	const rootStyles = `
-		.hidden { display: none; }
-		.modal-dialog { width: inherit; }
-		.clr-control-container { width: 100%; display: block; }
-		.clr-control-container input { width: 100%; }
-		.clr-form-control:first-child { margin-top: 0; }
-		.log-container { height: calc(100% - 2rem); overflow-y: auto; position: absolute; right: 0; }
+		<div class="modal-backdrop hidden" aria-hidden="true"></div>
 	`
 
 	var functions = `
@@ -111,6 +112,8 @@ func Init(settings Settings, form *FormConfig, handler SubmitHandler) (*WebConte
 				bestBuilder = buildInputFile;
 			} else if(element.type === 'input/directory') {
 				bestBuilder = buildInputDirectory;
+			} else if(element.type === 'text') {
+				return buildText(element);
 			}
 
 			return $('' + 
@@ -128,7 +131,6 @@ func Init(settings Settings, form *FormConfig, handler SubmitHandler) (*WebConte
 						(element.placeholder ? 'placeholder="' + element.placeholder + '" ' : '') + 
 						(element.initialValue ? 'value="' + element.initialValue + '" ' : '') + 
 					'class="clr-input form-field">' +
-               		'<clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>' +
         		'</div>' +
            		(element.helperText ? '<span class="clr-subtext">' + element.helperText + '</span>' : '')
 			);
@@ -161,10 +163,13 @@ func Init(settings Settings, form *FormConfig, handler SubmitHandler) (*WebConte
 						(element.placeholder ? 'placeholder="' + element.placeholder + '"' : '') +
 						(element.initialValue ? 'value="' + element.initialValue + '" ' : '') + 
 					'class="clr-input form-field">' +
-            		'<clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>' +
         		'</div>' +
         		(element.helperText ? '<span class="clr-subtext">' + element.helperText + '</span>' : '')
 			);
+		}
+
+		function buildText(element) {
+			return $('<p>' + element.label + '</p>');
 		}
 	`
 

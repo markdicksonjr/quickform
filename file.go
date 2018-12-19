@@ -10,7 +10,7 @@ type ChooseFileHandlerWrapper struct {
 func (f ChooseFileHandlerWrapper) OnChooseDirectoryRequested(elementId, path string, title string) {
 
 	// show the dialog, will block until closed or directory is picked
-	result := (*f.w.W).Dialog(webview.DialogTypeOpen, webview.DialogFlagDirectory, title, path)
+	result := (*f.w.W).Dialog(webview.DialogTypeOpen, webview.DialogFlagDirectory | webview.DialogFlagFile, title, path)
 
 	// if not cancelled
 	if result != "" {

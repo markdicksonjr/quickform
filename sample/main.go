@@ -28,7 +28,7 @@ func main() {
 
 	// gin up a simple config for the form
 	config := quickform.FormConfig{}
-	config.Elements = make([]quickform.FormConfigElements, 4)
+	config.Elements = make([]quickform.FormConfigElements, 5)
 	config.Elements[0].Name = "Name"
 	config.Elements[0].Label = "Name"
 	config.Elements[0].Type = "input"
@@ -46,6 +46,10 @@ func main() {
 	config.Elements[3].Name = "Directory"
 	config.Elements[3].Label = "Directory"
 	config.Elements[3].Type = "input/directory"
+
+	config.Elements[4].Name = "Instructions"
+	config.Elements[4].Label = "This is sample text - great for instructions"
+	config.Elements[4].Type = "text"
 
 	// provide mostly default webview settings
 	settings := quickform.Settings{
