@@ -31,7 +31,9 @@ func Init(settings Settings, form *FormConfig, handler SubmitHandler) (*WebConte
 		.clr-control-container { width: 100%; display: block; }
 		.clr-control-container input { width: 100%; }
 		.clr-form-control:first-child { margin-top: 0; }
+		.clr-form-control { display: inline-block; }
 		.log-container { height: calc(100% - 2rem); overflow-y: auto; position: absolute; right: 0; }
+		.clr-control-label { display: inline-block; margin-right: 8px; }
 	`
 
 	const dialogHTML = `
@@ -116,9 +118,16 @@ func Init(settings Settings, form *FormConfig, handler SubmitHandler) (*WebConte
 				return buildText(element);
 			}
 
+			var tooltipHtml = '';
+			if(element.tooltip) {
+				tooltipHtml = '<a href="#" role="tooltip" aria-haspopup="true" class="tooltip tooltip-xs tooltip-right"><clr-icon shape="info-circle" size="24"></clr-icon><span class="tooltip-content">' + 
+					element.tooltip + '</span></a>'
+			}
+
 			return $('' + 
 				'<div class="clr-form-control">' +
        				'<label for="' + element.name + '" class="clr-control-label">' + element.label + '</label>' +
+					tooltipHtml +
        				'<div class="clr-control-container">' +
 						bestBuilder(element).html() +
        				'</div>' +
@@ -176,6 +185,8 @@ func Init(settings Settings, form *FormConfig, handler SubmitHandler) (*WebConte
 	var finalHTML = `<!doctype html><html>
 		<head>
 			<link rel="stylesheet" href="https://unpkg.com/@clr/ui/clr-ui.min.css"/>
+			<link rel="stylesheet" href="https://unpkg.com/@clr/icons/clr-icons.min.css"/>
+			<script src="https://unpkg.com/@clr/icons/clr-icons.min.js"></script>
 			<script src="https://unpkg.com/zepto@1.2.0/dist/zepto.min.js"></script>
 			<style>` + rootStyles + `</style>
 		</head>

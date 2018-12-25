@@ -46,6 +46,7 @@ func main() {
 	config.Elements[3].Name = "Directory"
 	config.Elements[3].Label = "Directory"
 	config.Elements[3].Type = "input/directory"
+	config.Elements[3].Tooltip = "test tip"
 
 	config.Elements[4].Name = "Instructions"
 	config.Elements[4].Label = "This is sample text - great for instructions"
