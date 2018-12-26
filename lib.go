@@ -98,12 +98,12 @@ func Init(settings Settings, form *FormConfig, handler SubmitHandler) (*WebConte
 			submitHandler.onSubmit(returnValue);
 		}
 
-		function openDirectoryPicker(elementId) {
-			chooseFile.onChooseDirectoryRequested(elementId, "", "testT") // TODO: params
+		function openDirectoryPicker(elementId, initialValue) {
+			chooseFile.onChooseDirectoryRequested(elementId, "", "")
 		}
 
-		function openFilePicker(elementId) {
-			chooseFile.onChooseFileRequested(elementId, "", "testT") // TODO: params
+		function openFilePicker(elementId, initialValue) {
+			chooseFile.onChooseFileRequested(elementId, "", "")
 		}
 
 		function buildElement(element) {
@@ -160,7 +160,7 @@ func Init(settings Settings, form *FormConfig, handler SubmitHandler) (*WebConte
 						(element.initialValue ? 'value="' + element.initialValue + '" ' : '') + 
 					'class="clr-input form-field">' +
                		'<button class="btn btn-outline btn-sm" onclick="' + 
-						(isFile ? 'openFilePicker(\'' + element.name + '\')' : 'openDirectoryPicker(\'' + element.name + '\')') + '">Choose</button>' +
+						(isFile ? 'openFilePicker(\'' + element.name + '\', element.initialValue)' : 'openDirectoryPicker(\'' + element.name + '\')', element.initialValue) + '">Choose</button>' +
         		'</div>' +
            		(element.helperText ? '<span class="clr-subtext">' + element.helperText + '</span>' : '')
 			);

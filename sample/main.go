@@ -41,6 +41,7 @@ func main() {
 
 	config.Elements[2].Name = "File"
 	config.Elements[2].Label = "File"
+	config.Elements[2].InitialValue = "/somedir"
 	config.Elements[2].Type = "input/file"
 
 	config.Elements[3].Name = "Directory"
@@ -55,6 +56,8 @@ func main() {
 	// provide mostly default webview settings
 	settings := quickform.Settings{
 		Title: "Test",
+		Debug: true,
+		Height: 550,
 	}
 
 	// init the window
