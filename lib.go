@@ -154,13 +154,15 @@ func Init(settings Settings, form *FormConfig, handler SubmitHandler) (*WebConte
 		}
 
 		function buildInputFileOrDirectory(element, isFile) {
+			var initial = element.initialValue || '';
 			return $('<div class="clr-input-wrapper">' +
             		'<input type="text" id="' + element.name + '" spellcheck="false" ' + 
 						(element.placeholder ? 'placeholder="' + element.placeholder + '" ' : '') + 
-						(element.initialValue ? 'value="' + element.initialValue + '" ' : '') + 
+						(element.initialValue ? 'value="' + initial + '" ' : '') + 
 					'class="clr-input form-field">' +
                		'<button class="btn btn-outline btn-sm" onclick="' + 
-						(isFile ? 'openFilePicker(\'' + element.name + '\', element.initialValue)' : 'openDirectoryPicker(\'' + element.name + '\')', element.initialValue) + '">Choose</button>' +
+						(isFile ? 'openFilePicker(\'' + element.name + '\', \'' + initial + '\')' : 
+						'openDirectoryPicker(\'' + element.name + '\', ' + initial + ')') + '">Choose</button>' +
         		'</div>' +
            		(element.helperText ? '<span class="clr-subtext">' + element.helperText + '</span>' : '')
 			);
