@@ -35,6 +35,10 @@ func (w *WebContext) ClearLogs() {
 	(*w).Eval("clearLogs();")
 }
 
+func (w *WebContext) SetErrorMessage(message string) {
+	(*w).Eval("setErrorMessage(\"" + message + "\");")
+}
+
 func (w *WebContext) SetFullscreen(fullscreen bool) {
 	(*w.W).SetFullscreen(fullscreen)
 }

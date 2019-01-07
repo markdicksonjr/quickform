@@ -17,6 +17,8 @@ func (f *MainFormHandler) OnSubmit(result map[string]interface{}, w *quickform.W
 	(*w).AppendLogMessage("showed loading indicator")
 	log.Println("mock saving \"" + result["Name"].(string) + "\"")
 
+	(*w).SetErrorMessage("")
+
 	go func() {
 		time.Sleep(5 * time.Second)
 		(*w).ShowLoadingIndicator(false)

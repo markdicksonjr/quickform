@@ -27,13 +27,14 @@ func Init(settings Settings, form *FormConfig, handler SubmitHandler) (*WebConte
 
 	const rootStyles = `
 		.hidden { display: none; }
-		.modal-dialog { width: inherit; }
+		.modal-dialog { width: inherit; overflow-y: hidden; }
 		.clr-control-container { width: 100%; display: block; }
 		.clr-control-container input { width: 100%; }
 		.clr-form-control:first-child { margin-top: 0; }
 		.clr-form-control { display: inline-block; }
 		.log-container { height: calc(100% - 2rem); overflow-y: auto; position: absolute; right: 0; }
 		.clr-control-label { display: inline-block; margin-right: 8px; }
+		.alert { margin: 5px; }
 	`
 
 	const dialogHTML = `
@@ -51,6 +52,8 @@ func Init(settings Settings, form *FormConfig, handler SubmitHandler) (*WebConte
 
 	var functions = `
 		var logContainer = null;
+		var alertContainer = null;
+		var alertTextContainer = null;
 
 		(function(){
 			$ = Zepto;
@@ -69,6 +72,8 @@ func Init(settings Settings, form *FormConfig, handler SubmitHandler) (*WebConte
 				'</div>` + logContainer + `</div>');
 
 				logContainer = $('.log-container');
+				alertContainer = $('.alert');
+				alertTextContainer = $('.alert-text');
 			}
 		})()
 
@@ -79,6 +84,15 @@ func Init(settings Settings, form *FormConfig, handler SubmitHandler) (*WebConte
 			} else {
 				$('.modal').addClass('hidden');
 				$('.modal-backdrop').addClass('hidden');
+			}
+		}
+
+		function setErrorMessage(text) {
+			if(text) {
+				alertTextContainer.html(text);
+				alertContainer.removeClass('hidden');
+			} else {
+				alertContainer.addClass('hidden');
 			}
 		}
 
@@ -194,6 +208,16 @@ func Init(settings Settings, form *FormConfig, handler SubmitHandler) (*WebConte
 		</head>
 		<body>
 			<div class="main-container">
+				<div class="alert alert-danger hidden" role="alert">
+    				<div class="alert-items">
+						<div class="alert-item static">
+							<div class="alert-icon-wrapper"> 
+                				<clr-icon class="alert-icon" shape="exclamation-circle"></clr-icon>
+            				</div>
+							<span class="alert-text">Error</span>
+						</div>
+					</div>
+				</div>
     			<div class="content-container">
         			<div class="content-area">... loading ...</div>
     			</div>
