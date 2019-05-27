@@ -1,8 +1,14 @@
 package quickform
 
 import (
+	"bytes"
 	"github.com/zserge/webview"
-	"net/url"
+	"io"
+	"log"
+	"mime"
+	"net"
+	"net/http"
+	"path/filepath"
 )
 
 type Settings struct {
@@ -20,220 +26,12 @@ type Settings struct {
 }
 
 func Init(settings Settings, form *FormConfig, handler SubmitHandler) (*WebContext, error) {
-	var logContainer = `<div class="clr-col-6 log-container"></div>`
-	if settings.HideLogs {
-		logContainer = ``;
-	}
-
-	const rootStyles = `
-		.hidden { display: none; }
-		.modal-dialog { width: inherit; overflow-y: hidden; }
-		.clr-control-container { width: 100%; display: block; }
-		.clr-control-container input { width: 100%; }
-		.clr-form-control:first-child { margin-top: 0; }
-		.clr-form-control { display: inline-block; }
-		.log-container { height: calc(100% - 2rem); overflow-y: auto; position: absolute; right: 0; }
-		.clr-control-label { display: inline-block; margin-right: 8px; }
-		.alert { margin: 5px; }
-	`
-
-	const dialogHTML = `
-		<div class="modal hidden">
-			<div class="modal-dialog" role="dialog" aria-hidden="true">
-        		<div class="modal-content">
-            		<div class="modal-body">
-                		<span class="spinner">Loading...</span>
-            		</div>
-        		</div>
-    		</div>
-		</div>
-		<div class="modal-backdrop hidden" aria-hidden="true"></div>
-	`
-
-	var functions = `
-		var logContainer = null;
-		var alertContainer = null;
-		var alertTextContainer = null;
-
-		(function(){
-			$ = Zepto;
-			var contentAreaElement = $('.content-area');
-			if(!config.data || !config.data.elements) {
-				contentAreaElement.html('<span>No configuration was provided</span>');
-			} else {
-				var parentContainer = $('<form class="clr-form"></form>');
-				config.data.elements.forEach(function(element) {
-					parentContainer.append(buildElement(element));
-				});
-
-				parentContainer.append('<br/><button class="btn btn-primary" onclick="submit()">Submit</button>');
-				contentAreaElement.html('<div class="clr-row"><div class="clr-col-6">' + 
-					parentContainer.html() + 
-				'</div>` + logContainer + `</div>');
-
-				logContainer = $('.log-container');
-				alertContainer = $('.alert');
-				alertTextContainer = $('.alert-text');
-			}
-		})()
-
-		function showLoadingIndicator(visible) {
-			if(visible) {
-				$('.modal').removeClass('hidden');
-				$('.modal-backdrop').removeClass('hidden');
-			} else {
-				$('.modal').addClass('hidden');
-				$('.modal-backdrop').addClass('hidden');
-			}
-		}
-
-		function setErrorMessage(text) {
-			if(text) {
-				alertTextContainer.html(text);
-				alertContainer.removeClass('hidden');
-			} else {
-				alertContainer.addClass('hidden');
-			}
-		}
-
-		function appendLogMessage(text) {
-			logContainer.append($('<div>' + text + '</div>'));
-		}
-
-		function clearLogs() {
-			logContainer.html('');
-		}
-
-		function submit() {
-			let returnValue = {};
-			$('.form-field').forEach(function(field) {
-				returnValue[field.id] = field.value;
-			});
-			submitHandler.onSubmit(returnValue);
-		}
-
-		function openDirectoryPicker(elementId, initialValue) {
-			chooseFile.onChooseDirectoryRequested(elementId, "", "")
-		}
-
-		function openFilePicker(elementId, initialValue) {
-			chooseFile.onChooseFileRequested(elementId, "", "")
-		}
-
-		function buildElement(element) {
-			var bestBuilder = buildInput;
-			if(element.type === 'input/number') {
-				bestBuilder = buildInputNumber;
-			} else if(element.type === 'input/file') {
-				bestBuilder = buildInputFile;
-			} else if(element.type === 'input/directory') {
-				bestBuilder = buildInputDirectory;
-			} else if(element.type === 'text') {
-				return buildText(element);
-			}
-
-			var tooltipHtml = '';
-			if(element.tooltip) {
-				tooltipHtml = '<a href="#" role="tooltip" aria-haspopup="true" class="tooltip tooltip-xs tooltip-right"><clr-icon shape="info-circle" size="24"></clr-icon><span class="tooltip-content">' + 
-					element.tooltip + '</span></a>'
-			}
-
-			return $('' + 
-				'<div class="clr-form-control">' +
-       				'<label for="' + element.name + '" class="clr-control-label">' + element.label + '</label>' +
-					tooltipHtml +
-       				'<div class="clr-control-container">' +
-						bestBuilder(element).html() +
-       				'</div>' +
-    			'</div>');
-		}
-
-		function buildInput(element) {
-			return $('<div class="clr-input-wrapper">' +
-            		'<input type="text" id="' + element.name + '" spellcheck="false" ' + 
-						(element.placeholder ? 'placeholder="' + element.placeholder + '" ' : '') + 
-						(element.initialValue ? 'value="' + element.initialValue + '" ' : '') + 
-					'class="clr-input form-field">' +
-        		'</div>' +
-           		(element.helperText ? '<span class="clr-subtext">' + element.helperText + '</span>' : '')
-			);
-		}
-
-		function buildInputFile(element) {
-			return buildInputFileOrDirectory(element, true);
-		}
-
-		function buildInputDirectory(element) {
-			return buildInputFileOrDirectory(element, false);
-		}
-
-		function buildInputFileOrDirectory(element, isFile) {
-			var initial = element.initialValue || '';
-			return $('<div class="clr-input-wrapper">' +
-            		'<input type="text" id="' + element.name + '" spellcheck="false" ' + 
-						(element.placeholder ? 'placeholder="' + element.placeholder + '" ' : '') + 
-						(element.initialValue ? 'value="' + initial + '" ' : '') + 
-					'class="clr-input form-field">' +
-               		'<button class="btn btn-outline btn-sm" onclick="' + 
-						(isFile ? 'openFilePicker(\'' + element.name + '\', \'' + initial + '\')' : 
-						'openDirectoryPicker(\'' + element.name + '\', ' + initial + ')') + '">Choose</button>' +
-        		'</div>' +
-           		(element.helperText ? '<span class="clr-subtext">' + element.helperText + '</span>' : '')
-			);
-		}
-
-		function buildInputNumber(element) {
-			return $('<div class="clr-input-wrapper">' +
-            		'<input type="number" id="' + element.name + '" spellcheck="false" ' + 
-						(element.placeholder ? 'placeholder="' + element.placeholder + '"' : '') +
-						(element.initialValue ? 'value="' + element.initialValue + '" ' : '') + 
-					'class="clr-input form-field">' +
-        		'</div>' +
-        		(element.helperText ? '<span class="clr-subtext">' + element.helperText + '</span>' : '')
-			);
-		}
-
-		function buildText(element) {
-			return $('<p>' + element.label + '</p>');
-		}
-	`
-
-	var finalHTML = `<!doctype html><html>
-		<head>
-			<link rel="stylesheet" href="https://unpkg.com/@clr/ui/clr-ui.min.css"/>
-			<link rel="stylesheet" href="https://unpkg.com/@clr/icons/clr-icons.min.css"/>
-			<script src="https://unpkg.com/@clr/icons/clr-icons.min.js"></script>
-			<script src="https://unpkg.com/zepto@1.2.0/dist/zepto.min.js"></script>
-			<style>` + rootStyles + `</style>
-		</head>
-		<body>
-			<div class="main-container">
-				<div class="alert alert-danger hidden" role="alert">
-    				<div class="alert-items">
-						<div class="alert-item static">
-							<div class="alert-icon-wrapper"> 
-                				<clr-icon class="alert-icon" shape="exclamation-circle"></clr-icon>
-            				</div>
-							<span class="alert-text">Error</span>
-						</div>
-					</div>
-				</div>
-    			<div class="content-container">
-        			<div class="content-area">... loading ...</div>
-    			</div>
-			</div>
-			` + dialogHTML + `
-			<script>`+ functions + `</script>
-		</body>
-		</html>
-	`
-
 	w := webview.New(webview.Settings{
 		Title: settings.Title,
 		Width: settings.Width,
 		Height: settings.Height,
 		Resizable: settings.Resizable,
-		URL: `data:text/html,` + url.PathEscape(finalHTML),
+		URL: startServer(),
 		Debug: settings.Debug,
 	})
 
@@ -250,7 +48,52 @@ func Init(settings Settings, form *FormConfig, handler SubmitHandler) (*WebConte
 			handler: handler,
 			w: &webContext,
 		})
+
+		if err := w.Eval(string(MustAsset("assets/zepto.min.js"))); err != nil {
+			log.Println(err.Error())
+			//return nil, err
+			// TODO
+		}
+
+		if err := w.Eval(string(MustAsset("assets/app.js"))); err != nil {
+			log.Println(err.Error())
+			//return nil, err
+			// TODO
+		}
+
+		//if err := w.Eval(functions); err != nil {
+		//	log.Println(err.Error())
+		//	//return nil, err
+		//	// TODO
+		//}
 	})
 
 	return &webContext, nil
+}
+
+func startServer() string {
+	ln, err := net.Listen("tcp", "127.0.0.1:0")
+	if err != nil {
+		log.Fatal(err)
+	}
+	go func() {
+		defer ln.Close()
+		http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+			path := r.URL.Path
+			if len(path) > 0 && path[0] == '/' {
+				path = path[1:]
+			}
+			if path == "" {
+				path = "assets/index.html"
+			}
+			if bs, err := Asset(path); err != nil {
+				w.WriteHeader(http.StatusNotFound)
+			} else {
+				w.Header().Add("Content-Type", mime.TypeByExtension(filepath.Ext(path)))
+				io.Copy(w, bytes.NewBuffer(bs))
+			}
+		})
+		log.Fatal(http.Serve(ln, nil))
+	}()
+	return "http://" + ln.Addr().String()
 }

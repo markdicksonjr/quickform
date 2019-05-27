@@ -17,3 +17,12 @@ them when your app is built.  To manually grab dependencies (to $GOPATH), run:
 ## Getting Started
 
 A sample app is provided in the "sample" directory in this repo.
+
+## Re-generating Assets
+
+```
+go-bindata -pkg quickform assets
+```
+
+Change the package from main to "quickform" in the generated file
+

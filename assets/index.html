@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<head>
+    <link rel="stylesheet" href="https://unpkg.com/@clr/ui/clr-ui.min.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/@clr/icons/clr-icons.min.css"/>
+    <script src="https://unpkg.com/@clr/icons/clr-icons.min.js"></script>
+    <script src="assets/zepto.min.js"></script>
+    <script src="assets/app.js"></script>
+    <style>
+        .hidden { display: none; }
+        .modal-dialog { width: inherit; overflow-y: hidden; }
+        .clr-control-container { width: 100%; display: block; }
+        .clr-control-container input { width: 100%; }
+        .clr-form-control:first-child { margin-top: 0; }
+        .clr-form-control { display: inline-block; }
+        .log-container { height: calc(100% - 2rem); overflow-y: auto; position: absolute; right: 0; }
+        .clr-control-label { display: inline-block; margin-right: 8px; }
+        .alert { margin: 5px; }
+    </style>
+</head>
+<body>
+<div class="main-container">
+    <div class="alert alert-danger hidden" role="alert">
+        <div class="alert-items">
+            <div class="alert-item static">
+                <div class="alert-icon-wrapper">
+                    <clr-icon class="alert-icon" shape="exclamation-circle"></clr-icon>
+                </div>
+                <span class="alert-text">Error</span>
+            </div>
+        </div>
+    </div>
+    <div class="content-container">
+        <div class="content-area">... loading ...</div>
+    </div>
+</div>
+<div class="modal hidden">
+    <div class="modal-dialog" role="dialog" aria-hidden="true">
+        <div class="modal-content">
+            <div class="modal-body">
+                <span class="spinner">Loading...</span>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-backdrop hidden" aria-hidden="true"></div>
+<script></script>
+</body>
+</html>

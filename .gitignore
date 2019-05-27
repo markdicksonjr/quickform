@@ -1,3 +1,4 @@
 go-forms-ui
 main
 /vendor
+/bindata.go
