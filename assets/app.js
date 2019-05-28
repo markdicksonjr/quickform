@@ -3,12 +3,11 @@ var alertContainer = null;
 var alertTextContainer = null;
 
 function init() {
-    var contentAreaElement = $('.content-area');
+    var contentAreaElement = Zepto('.content-area');
     if(typeof(config) === 'undefined' || !config.data || !config.data.elements) {
         contentAreaElement.html('<span>No configuration was provided</span>');
     } else {
-        console.log('have cfg');
-        var parentContainer = $('<form class="clr-form"></form>');
+        var parentContainer = Zepto('<form class="clr-form"></form>');
         config.data.elements.forEach(function(element) {
             parentContainer.append(buildElement(element));
         });
@@ -18,19 +17,19 @@ function init() {
             parentContainer.html() +
             '</div><div class="clr-col-6 log-container"></div></div>');
 
-        logContainer = $('.log-container');
-        alertContainer = $('.alert');
-        alertTextContainer = $('.alert-text');
+        logContainer = Zepto('.log-container');
+        alertContainer = Zepto('.alert');
+        alertTextContainer = Zepto('.alert-text');
     }
 }
 
 function showLoadingIndicator(visible) {
     if(visible) {
-        $('.modal').removeClass('hidden');
-        $('.modal-backdrop').removeClass('hidden');
+        Zepto('.modal').removeClass('hidden');
+        Zepto('.modal-backdrop').removeClass('hidden');
     } else {
-        $('.modal').addClass('hidden');
-        $('.modal-backdrop').addClass('hidden');
+        Zepto('.modal').addClass('hidden');
+        Zepto('.modal-backdrop').addClass('hidden');
     }
 }
 
@@ -44,7 +43,7 @@ function setErrorMessage(text) {
 }
 
 function appendLogMessage(text) {
-    logContainer.append($('<div>' + text + '</div>'));
+    logContainer.append(Zepto('<div>' + text + '</div>'));
 }
 
 function clearLogs() {
@@ -53,7 +52,7 @@ function clearLogs() {
 
 function submit() {
     let returnValue = {};
-    $('.form-field').forEach(function(field) {
+    Zepto('.form-field').forEach(function(field) {
         returnValue[field.id] = field.value;
     });
     submitHandler.onSubmit(returnValue);
@@ -85,7 +84,7 @@ function buildElement(element) {
             element.tooltip + '</span></a>'
     }
 
-    return $('' +
+    return Zepto('' +
         '<div class="clr-form-control">' +
         '<label for="' + element.name + '" class="clr-control-label">' + element.label + '</label>' +
         tooltipHtml +
@@ -96,7 +95,7 @@ function buildElement(element) {
 }
 
 function buildInput(element) {
-    return $('<div class="clr-input-wrapper">' +
+    return Zepto('<div class="clr-input-wrapper">' +
         '<input type="text" id="' + element.name + '" spellcheck="false" ' +
         (element.placeholder ? 'placeholder="' + element.placeholder + '" ' : '') +
         (element.initialValue ? 'value="' + element.initialValue + '" ' : '') +
@@ -116,7 +115,7 @@ function buildInputDirectory(element) {
 
 function buildInputFileOrDirectory(element, isFile) {
     var initial = element.initialValue || '';
-    return $('<div class="clr-input-wrapper">' +
+    return Zepto('<div class="clr-input-wrapper">' +
         '<input type="text" id="' + element.name + '" spellcheck="false" ' +
         (element.placeholder ? 'placeholder="' + element.placeholder + '" ' : '') +
         (element.initialValue ? 'value="' + initial + '" ' : '') +
@@ -130,7 +129,7 @@ function buildInputFileOrDirectory(element, isFile) {
 }
 
 function buildInputNumber(element) {
-    return $('<div class="clr-input-wrapper">' +
+    return Zepto('<div class="clr-input-wrapper">' +
         '<input type="number" id="' + element.name + '" spellcheck="false" ' +
         (element.placeholder ? 'placeholder="' + element.placeholder + '"' : '') +
         (element.initialValue ? 'value="' + element.initialValue + '" ' : '') +
@@ -141,7 +140,15 @@ function buildInputNumber(element) {
 }
 
 function buildText(element) {
-    return $('<p>' + element.label + '</p>');
+    return Zepto('<p>' + element.label + '</p>');
 }
 
-window.onload = function() { init(); };
+Zepto(document).ready(function () {
+    init();
+})
+
+// (function() {
+//     init()
+// })()
+
+//window.onload = function() { init(); };
