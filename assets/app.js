@@ -3,11 +3,11 @@ var alertContainer = null;
 var alertTextContainer = null;
 
 function init() {
-    var contentAreaElement = Zepto('.content-area');
+    var contentAreaElement = $('.content-area');
     if(typeof(config) === 'undefined' || !config.data || !config.data.elements) {
         contentAreaElement.html('<span>No configuration was provided</span>');
     } else {
-        var parentContainer = Zepto('<form class="clr-form"></form>');
+        var parentContainer = $('<form class="clr-form"></form>');
         config.data.elements.forEach(function(element) {
             parentContainer.append(buildElement(element));
         });
@@ -17,19 +17,19 @@ function init() {
             parentContainer.html() +
             '</div><div class="clr-col-6 log-container"></div></div>');
 
-        logContainer = Zepto('.log-container');
-        alertContainer = Zepto('.alert');
-        alertTextContainer = Zepto('.alert-text');
+        logContainer = $('.log-container');
+        alertContainer = $('.alert');
+        alertTextContainer = $('.alert-text');
     }
 }
 
 function showLoadingIndicator(visible) {
     if(visible) {
-        Zepto('.modal').removeClass('hidden');
-        Zepto('.modal-backdrop').removeClass('hidden');
+        $('.modal').removeClass('hidden');
+        $('.modal-backdrop').removeClass('hidden');
     } else {
-        Zepto('.modal').addClass('hidden');
-        Zepto('.modal-backdrop').addClass('hidden');
+        $('.modal').addClass('hidden');
+        $('.modal-backdrop').addClass('hidden');
     }
 }
 
@@ -43,7 +43,7 @@ function setErrorMessage(text) {
 }
 
 function appendLogMessage(text) {
-    logContainer.append(Zepto('<div>' + text + '</div>'));
+    logContainer.append($('<div>' + text + '</div>'));
 }
 
 function clearLogs() {
@@ -52,7 +52,7 @@ function clearLogs() {
 
 function submit() {
     let returnValue = {};
-    Zepto('.form-field').forEach(function(field) {
+    $('.form-field').forEach(function(field) {
         returnValue[field.id] = field.value;
     });
     submitHandler.onSubmit(returnValue);
@@ -84,7 +84,7 @@ function buildElement(element) {
             element.tooltip + '</span></a>'
     }
 
-    return Zepto('' +
+    return $('' +
         '<div class="clr-form-control">' +
         '<label for="' + element.name + '" class="clr-control-label">' + element.label + '</label>' +
         tooltipHtml +
@@ -95,7 +95,7 @@ function buildElement(element) {
 }
 
 function buildInput(element) {
-    return Zepto('<div class="clr-input-wrapper">' +
+    return $('<div class="clr-input-wrapper">' +
         '<input type="text" id="' + element.name + '" spellcheck="false" ' +
         (element.placeholder ? 'placeholder="' + element.placeholder + '" ' : '') +
         (element.initialValue ? 'value="' + element.initialValue + '" ' : '') +
@@ -115,7 +115,7 @@ function buildInputDirectory(element) {
 
 function buildInputFileOrDirectory(element, isFile) {
     var initial = element.initialValue || '';
-    return Zepto('<div class="clr-input-wrapper">' +
+    return $('<div class="clr-input-wrapper">' +
         '<input type="text" id="' + element.name + '" spellcheck="false" ' +
         (element.placeholder ? 'placeholder="' + element.placeholder + '" ' : '') +
         (element.initialValue ? 'value="' + initial + '" ' : '') +
@@ -129,7 +129,7 @@ function buildInputFileOrDirectory(element, isFile) {
 }
 
 function buildInputNumber(element) {
-    return Zepto('<div class="clr-input-wrapper">' +
+    return $('<div class="clr-input-wrapper">' +
         '<input type="number" id="' + element.name + '" spellcheck="false" ' +
         (element.placeholder ? 'placeholder="' + element.placeholder + '"' : '') +
         (element.initialValue ? 'value="' + element.initialValue + '" ' : '') +
@@ -140,12 +140,12 @@ function buildInputNumber(element) {
 }
 
 function buildText(element) {
-    return Zepto('<p>' + element.label + '</p>');
+    return $('<p>' + element.label + '</p>');
 }
 
-Zepto(document).ready(function () {
+$(document).ready(function () {
     init();
-})
+});
 
 // (function() {
 //     init()

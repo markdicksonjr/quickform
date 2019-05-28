@@ -49,8 +49,8 @@ func Init(settings Settings, form *FormConfig, handler SubmitHandler) (*WebConte
 			w: &webContext,
 		})
 
-		if err := w.Eval(string(MustAsset("assets/zepto.min.js"))); err != nil {
-			log.Println("while evaluating assets/zepto.js, error = " + err.Error())
+		if err := w.Eval(string(MustAsset("assets/jquery-3.4.1.min.js"))); err != nil {
+			log.Println("while evaluating assets/jquery.js, error = " + err.Error())
 			//return nil, err
 			// TODO
 		}
