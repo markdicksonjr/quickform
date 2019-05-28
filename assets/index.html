@@ -1,5 +1,10 @@
 <!DOCTYPE html>
 <head>
+    <script>
+        if(!window.customElements) {
+            window.customElements = {define: function () {} }
+        }
+    </script>
     <link rel="stylesheet" href="assets/clr-ui.min.css"/>
     <link rel="stylesheet" href="assets/clr-icons.min.css"/>
     <script src="assets/clr-icons.min.js"></script>
