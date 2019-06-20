@@ -52,7 +52,7 @@ function clearLogs() {
 
 function submit() {
     let returnValue = {};
-    $('.form-field').forEach(function(field) {
+    $('.form-field').each(function(index, field, v) {
         returnValue[field.id] = field.value;
     });
     submitHandler.onSubmit(returnValue);
