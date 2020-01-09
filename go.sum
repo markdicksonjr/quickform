@@ -1,4 +1,2 @@
-github.com/zserge/webview v0.0.0-20190123072648-16c93bcaeaeb h1:zVjnyZIM7UtkG3dNckiudIm+TUHkZqi5xlVQPd3J6/c=
-github.com/zserge/webview v0.0.0-20190123072648-16c93bcaeaeb/go.mod h1:a1CV8KR4Dd1eP2g+mEijGOp+HKczwdKHWyx0aPHKvo4=
-github.com/zserge/webview v0.0.0-20190125144901-4293066e9dda h1:3WtzObHLRHWFoAgdp5ZIOa8lDEW8F51Y6Nr1diwGfJ8=
-github.com/zserge/webview v0.0.0-20190125144901-4293066e9dda/go.mod h1:a1CV8KR4Dd1eP2g+mEijGOp+HKczwdKHWyx0aPHKvo4=
+github.com/zserge/webview v0.0.0-20200109185804-0bcbcaec3554 h1:lpAOq34ZVLTWENnAKfNgb7Ez8hxKYL1Ed/Uinra16eU=
+github.com/zserge/webview v0.0.0-20200109185804-0bcbcaec3554/go.mod h1:a1CV8KR4Dd1eP2g+mEijGOp+HKczwdKHWyx0aPHKvo4=
